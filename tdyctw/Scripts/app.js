@@ -1,7 +1,7 @@
 function sayHello() {
     var compiler = document.getElementById("compiler").value;
     var framework = document.getElementById("framework").value;
-    return "Hello from ${compiler} and ${framework}!";
+    return "Hello TypeScript from ${compiler} and ${framework}!";
 }
 function generateUID() {
     var firstPart = (Math.random() * 46656) | 0;

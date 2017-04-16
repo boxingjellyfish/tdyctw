@@ -20,6 +20,7 @@ var SimpleGame = (function () {
     SimpleGame.prototype.create = function () {
         var logo = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, "logo");
         logo.anchor.setTo(0.5, 0.5);
+        logo.scale.setTo(4, 4);
     };
     return SimpleGame;
 }());

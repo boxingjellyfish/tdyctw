@@ -4,5 +4,31 @@
 }
 
 <h2>The Day You Conquered The World</h2>
-<p>App Version: @ViewBag.AppVersion</p>
+<p>Current players:</p>
+<ul id="playerList"></ul>
 
+<script src="Scripts/jquery.signalR-2.2.1.min.js"></script>
+<script src="signalr/hubs"></script>
+<script type="text/javascript">
+    $(function () {
+        var sandboxhub = $.connection.sandboxHub;
+        $.connection.hub.logging = true;
+
+        sandboxhub.client.broadcastJoinGame = function (message) {
+            $("#playerList").append("<li>" + message + "</li>");
+        };
+
+        $.connection.hub.start().done(function () {
+            var id = generateUID();
+            sandboxhub.server.joinGame(id);
+        });
+    });
+
+    function generateUID() {
+        var firstPart = (Math.random() * 46656) | 0;
+        var secondPart = (Math.random() * 46656) | 0;
+        firstPart = ("000" + firstPart.toString(36)).slice(-3);
+        secondPart = ("000" + secondPart.toString(36)).slice(-3);
+        return firstPart + secondPart;
+    }
+</script>

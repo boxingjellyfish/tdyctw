@@ -1,15 +1,15 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "TDYCTW";
 }
-
-<h2>The Day You Conquered The World</h2>
-<div id="gamecontainer"></div>
-<p>Current players:</p>
-<ul id="playerList"></ul>
+<div style="text-align:center;">
+    <h2>The Day You Conquered The World</h2>
+    <div id="gamecontainer" style="margin-left: auto;margin-right: auto;width: 800px;"></div>
+    <p>Current players:</p>
+    <div id="playerList"></div>
+</div>
 
 <script src="~/Scripts/phaser.min.js"></script>
-<script src="~/Scripts/app.js"></script>
+<script src="~/Scripts/game.js"></script>
 <script src="~/Scripts/jquery.signalR-2.2.1.min.js"></script>
 <script src="~/signalr/hubs"></script>
 <script type="text/javascript">
@@ -18,11 +18,11 @@
         //$.connection.hub.logging = true;
 
         sandboxhub.client.broadcastJoinGame = function (message) {
-            $("#playerList").append("<li>" + message + "</li>");
+            $("#playerList").append("<p>" + message + "</p>");
         };
 
         $.connection.hub.start().done(function () {
-            var id = generateUID();
+            var id = tdyctw.Misc.generateUID();
             sandboxhub.server.joinGame(id);
         });
     });

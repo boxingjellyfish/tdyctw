@@ -1,18 +1,18 @@
 {
+  "compileOnSave": true,
   "compilerOptions": {
+    "module": "system",
     "noImplicitAny": true,
     "noEmitOnError": true,
     "removeComments": true,
     "sourceMap": true,
     "target": "es5",
-    "outDir": "./Scripts"
+    "outFile": "./Scripts/game.js"
   },
-  "files": [
-    "./TypeScript/app.ts"
+  "include": [
+    "TypeScript/**/*"
   ],
-  "compileOnSave": true,
   "exclude": [
-    "node_modules",
-    "wwwroot"
+    "TypeScript/def/*"
   ]
 }

@@ -179,10 +179,14 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="TypeScript\app.ts" />
     <TypeScriptCompile Include="TypeScript\def\p2.d.ts" />
     <TypeScriptCompile Include="TypeScript\def\phaser.d.ts" />
     <TypeScriptCompile Include="TypeScript\def\pixi.d.ts" />
+    <TypeScriptCompile Include="TypeScript\Game.ts" />
+    <TypeScriptCompile Include="TypeScript\State\MainMenu.ts" />
+    <TypeScriptCompile Include="TypeScript\State\Preloader.ts" />
+    <TypeScriptCompile Include="TypeScript\State\Boot.ts" />
+    <TypeScriptCompile Include="TypeScript\Util\Misc.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

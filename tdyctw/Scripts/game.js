@@ -1,8 +1,13 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var tdyctw;
 (function (tdyctw) {
     var Game = (function (_super) {
@@ -38,23 +43,6 @@ var tdyctw;
         return Misc;
     }());
     tdyctw.Misc = Misc;
-})(tdyctw || (tdyctw = {}));
-var tdyctw;
-(function (tdyctw) {
-    var PlayState = (function (_super) {
-        __extends(PlayState, _super);
-        function PlayState() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        PlayState.prototype.create = function () {
-            var titleStyle = { font: "18px monospace", fill: "#00ff00", align: "center" };
-            var titleString = this.game.cache.getJSON("strings")["main_menu_title"];
-            this.titleText = this.add.text(this.game.world.centerX, this.game.world.centerY, "PLAY STATE", titleStyle);
-            this.titleText.anchor.set(0.5);
-        };
-        return PlayState;
-    }(Phaser.State));
-    tdyctw.PlayState = PlayState;
 })(tdyctw || (tdyctw = {}));
 var tdyctw;
 (function (tdyctw) {
@@ -138,15 +126,32 @@ var tdyctw;
         };
         MainMenuState.prototype.startGame = function () {
             this.inputEnabled = false;
-            this.add.tween(this.titleText).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
-            this.add.tween(this.option2Text).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
-            this.add.tween(this.option3Text).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true).onComplete.add(function () {
+            this.add.tween(this.titleText).to({ alpha: 0 }, 500, Phaser.Easing.Linear.None, true);
+            this.add.tween(this.option2Text).to({ alpha: 0 }, 500, Phaser.Easing.Linear.None, true);
+            this.add.tween(this.option3Text).to({ alpha: 0 }, 500, Phaser.Easing.Linear.None, true).onComplete.add(function () {
                 this.game.state.start("PlayState", true, false);
             }, this);
         };
         return MainMenuState;
     }(Phaser.State));
     tdyctw.MainMenuState = MainMenuState;
+})(tdyctw || (tdyctw = {}));
+var tdyctw;
+(function (tdyctw) {
+    var PlayState = (function (_super) {
+        __extends(PlayState, _super);
+        function PlayState() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        PlayState.prototype.create = function () {
+            var titleStyle = { font: "18px monospace", fill: "#00ff00", align: "center" };
+            var titleString = this.game.cache.getJSON("strings")["main_menu_title"];
+            this.titleText = this.add.text(this.game.world.centerX, this.game.world.centerY, "PLAY STATE", titleStyle);
+            this.titleText.anchor.set(0.5);
+        };
+        return PlayState;
+    }(Phaser.State));
+    tdyctw.PlayState = PlayState;
 })(tdyctw || (tdyctw = {}));
 var tdyctw;
 (function (tdyctw) {

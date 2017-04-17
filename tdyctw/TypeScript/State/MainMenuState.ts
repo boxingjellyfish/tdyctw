@@ -63,9 +63,9 @@ module tdyctw {
 
         startGame() {
             this.inputEnabled = false;
-            this.add.tween(this.titleText).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
-            this.add.tween(this.option2Text).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
-            this.add.tween(this.option3Text).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true).onComplete.add(function () {
+            this.add.tween(this.titleText).to({ alpha: 0 }, 500, Phaser.Easing.Linear.None, true);
+            this.add.tween(this.option2Text).to({ alpha: 0 }, 500, Phaser.Easing.Linear.None, true);
+            this.add.tween(this.option3Text).to({ alpha: 0 }, 500, Phaser.Easing.Linear.None, true).onComplete.add(function () {
                 this.game.state.start("PlayState", true, false);
             }, this);
         }

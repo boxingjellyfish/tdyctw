@@ -118,6 +118,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\img\cursor.png" />
     <Content Include="favicon.ico" />
     <Content Include="Content\img\bjlogo.png" />
     <Content Include="Content\css\bootstrap.css" />
@@ -133,6 +134,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\txt\strings_en.json" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -183,9 +185,10 @@
     <TypeScriptCompile Include="TypeScript\def\phaser.d.ts" />
     <TypeScriptCompile Include="TypeScript\def\pixi.d.ts" />
     <TypeScriptCompile Include="TypeScript\Game.ts" />
-    <TypeScriptCompile Include="TypeScript\State\MainMenu.ts" />
-    <TypeScriptCompile Include="TypeScript\State\Preloader.ts" />
-    <TypeScriptCompile Include="TypeScript\State\Boot.ts" />
+    <TypeScriptCompile Include="TypeScript\State\PlayState.ts" />
+    <TypeScriptCompile Include="TypeScript\State\MainMenuState.ts" />
+    <TypeScriptCompile Include="TypeScript\State\PreloaderState.ts" />
+    <TypeScriptCompile Include="TypeScript\State\BootState.ts" />
     <TypeScriptCompile Include="TypeScript\Util\Misc.ts" />
   </ItemGroup>
   <ItemGroup>

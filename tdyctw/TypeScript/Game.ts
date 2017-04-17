@@ -18,7 +18,3 @@ module tdyctw {
     }
 
 } 
-
-window.onload = () => {
-    var game = new tdyctw.Game();
-};

@@ -118,6 +118,8 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\img\base.png" />
+    <Content Include="Content\img\base_sprite.png" />
     <Content Include="Content\img\cursor.png" />
     <Content Include="favicon.ico" />
     <Content Include="Content\img\bjlogo.png" />
@@ -185,6 +187,7 @@
     <TypeScriptCompile Include="TypeScript\def\phaser.d.ts" />
     <TypeScriptCompile Include="TypeScript\def\pixi.d.ts" />
     <TypeScriptCompile Include="TypeScript\Game.ts" />
+    <TypeScriptCompile Include="TypeScript\Sprite\BaseSprite.ts" />
     <TypeScriptCompile Include="TypeScript\State\PlayState.ts" />
     <TypeScriptCompile Include="TypeScript\State\MainMenuState.ts" />
     <TypeScriptCompile Include="TypeScript\State\PreloaderState.ts" />

@@ -1,13 +1,8 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var tdyctw;
 (function (tdyctw) {
     var Game = (function (_super) {
@@ -25,9 +20,6 @@ var tdyctw;
     }(Phaser.Game));
     tdyctw.Game = Game;
 })(tdyctw || (tdyctw = {}));
-window.onload = function () {
-    var game = new tdyctw.Game();
-};
 var tdyctw;
 (function (tdyctw) {
     var Misc = (function () {
@@ -43,6 +35,64 @@ var tdyctw;
         return Misc;
     }());
     tdyctw.Misc = Misc;
+})(tdyctw || (tdyctw = {}));
+var tdyctw;
+(function (tdyctw) {
+    var PlayState = (function (_super) {
+        __extends(PlayState, _super);
+        function PlayState() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        PlayState.prototype.create = function () {
+            var debugTextStyle = { font: "10px monospace", fill: "#ffffff" };
+            this.debugText = this.add.text(0, 0, "Play state", debugTextStyle);
+            this.debugText.alpha = 0;
+            this.bases = [];
+            for (var i = 0; i < 4; i++) {
+                var base = new tdyctw.BaseSprite(this.game, this.game.rnd.integerInRange(50, this.game.world.width - 50), this.game.rnd.integerInRange(50, this.game.world.height - 50));
+                base.baseIndex = i;
+                base.events.onInputDown.add(function (sprite, pointer) {
+                    sprite.animations.play("pulse", 6, true);
+                    this.selectedBase = sprite;
+                }, this);
+                this.bases.push(base);
+                this.add.existing(base);
+            }
+            this.game.input.onDown.add(function (sprite, pointer) {
+                for (var i = 0; i < this.bases.length; i++) {
+                    this.bases[i].animations.stop(null, true);
+                    this.selectedBase = null;
+                }
+            }, this);
+            this.trailLine = this.game.add.graphics(0, 0);
+        };
+        PlayState.prototype.update = function () {
+            this.trailLine.clear();
+            this.debugText.text = "selectedBase: " + this.selectedBase;
+            if (this.selectedBase != null) {
+                this.trailLine.lineStyle(1, 0x008800, 1);
+                var draw = true;
+                var fromX = this.selectedBase.x;
+                var fromY = this.selectedBase.y;
+                var toX = this.game.input.x;
+                var toY = this.game.input.y;
+                var x = fromX;
+                var y = fromY;
+                var size = 2;
+                for (var i = 0.05; i <= 1; i = i + 0.05) {
+                    this.trailLine.moveTo(x, y);
+                    x = fromX + (toX - fromX) * i;
+                    y = fromY + (toY - fromY) * i;
+                    if (draw) {
+                        this.trailLine.lineTo(x, y);
+                    }
+                    draw = !draw;
+                }
+            }
+        };
+        return PlayState;
+    }(Phaser.State));
+    tdyctw.PlayState = PlayState;
 })(tdyctw || (tdyctw = {}));
 var tdyctw;
 (function (tdyctw) {
@@ -138,23 +188,6 @@ var tdyctw;
 })(tdyctw || (tdyctw = {}));
 var tdyctw;
 (function (tdyctw) {
-    var PlayState = (function (_super) {
-        __extends(PlayState, _super);
-        function PlayState() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        PlayState.prototype.create = function () {
-            var titleStyle = { font: "18px monospace", fill: "#00ff00", align: "center" };
-            var titleString = this.game.cache.getJSON("strings")["main_menu_title"];
-            this.titleText = this.add.text(this.game.world.centerX, this.game.world.centerY, "PLAY STATE", titleStyle);
-            this.titleText.anchor.set(0.5);
-        };
-        return PlayState;
-    }(Phaser.State));
-    tdyctw.PlayState = PlayState;
-})(tdyctw || (tdyctw = {}));
-var tdyctw;
-(function (tdyctw) {
     var PreloaderState = (function (_super) {
         __extends(PreloaderState, _super);
         function PreloaderState() {
@@ -162,6 +195,8 @@ var tdyctw;
         }
         PreloaderState.prototype.preload = function () {
             this.load.json("strings", "/Content/txt/strings_en.json");
+            this.load.image("base", "/Content/img/base.png");
+            this.load.spritesheet("baseSprite", "/Content/img/base_sprite.png", 32, 32, 2);
         };
         PreloaderState.prototype.create = function () {
             this.game.state.start("MainMenuState", true, false);
@@ -169,5 +204,23 @@ var tdyctw;
         return PreloaderState;
     }(Phaser.State));
     tdyctw.PreloaderState = PreloaderState;
+})(tdyctw || (tdyctw = {}));
+var tdyctw;
+(function (tdyctw) {
+    var BaseSprite = (function (_super) {
+        __extends(BaseSprite, _super);
+        function BaseSprite(game, x, y) {
+            var _this = _super.call(this, game, x, y, "baseSprite") || this;
+            _this.anchor.setTo(0.5, 0.5);
+            _this.scale.setTo(0.5, 0.5);
+            _this.inputEnabled = true;
+            _this.animations.add("pulse");
+            return _this;
+        }
+        BaseSprite.prototype.update = function () {
+        };
+        return BaseSprite;
+    }(Phaser.Sprite));
+    tdyctw.BaseSprite = BaseSprite;
 })(tdyctw || (tdyctw = {}));
 //# sourceMappingURL=game.js.map

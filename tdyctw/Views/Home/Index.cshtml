@@ -2,8 +2,12 @@
     ViewBag.Title = "TDYCTW";
 }
 <div style="text-align:center;">
-    <h2>The Day You Conquered The World</h2>
-    <div id="gamecontainer" style="margin-left: auto;margin-right: auto;width: 800px; cursor:url('/Content/img/cursor.png'), auto;"></div>
+    <p></p>
+    <div id="gamecontainer" style="margin-left: auto;margin-right: auto;width: 800px; height: 450px; cursor:url('/Content/img/cursor.png'), auto;"></div>
+    <p></p>
+    <button id="goToBootState">Boot</button>
+    <button id="goToMainMenuState">Menu</button>
+    <button id="goToPlayState">Play</button>
     <p>Current players:</p>
     <div id="playerList"></div>
 </div>
@@ -13,9 +17,11 @@
 <script src="~/Scripts/jquery.signalR-2.2.1.min.js"></script>
 <script src="~/signalr/hubs"></script>
 <script type="text/javascript">
-    $(function () {
+    var game = null;
+    $(document).ready(function () {
+        game = new tdyctw.Game();
+
         var sandboxhub = $.connection.sandboxHub;
-        //$.connection.hub.logging = true;
 
         sandboxhub.client.broadcastJoinGame = function (message) {
             $("#playerList").append("<p>" + message + "</p>");
@@ -25,5 +31,16 @@
             var id = tdyctw.Misc.generateUID();
             sandboxhub.server.joinGame(id);
         });
+
+        $("#goToBootState").click(function () {
+            game.state.start("BootState");
+        });
+        $("#goToMainMenuState").click(function () {
+            game.state.start("MainMenuState");
+        });
+        $("#goToPlayState").click(function () {
+            game.state.start("PlayState");
+        });
+
     });
 </script>

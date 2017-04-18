@@ -17,6 +17,8 @@ module tdyctw {
             //  Phaser will automatically pause if the browser tab the game is in loses focus. You can disable that here:
             this.stage.disableVisibilityChange = true;
 
+            this.game.time.advancedTiming = true;
+
             // Studio logo
             this.logo = this.add.sprite(this.game.world.centerX, this.game.world.centerY, "bjlogo");
             this.logo.anchor.setTo(0.5, 0.5);

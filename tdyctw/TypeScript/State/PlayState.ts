@@ -9,11 +9,14 @@ module tdyctw {
         selectedBase: Phaser.Sprite;
         selectedBaseIndex: number;
         trailLine: Phaser.Graphics;
+        trailOffset: number = 0;
+        trailOffsetIncrement: number = 0.5;
+        trailLength: number = 4;
+        trailWidth: number = 1;
 
         create() {
-            var debugTextStyle = { font: "10px monospace", fill: "#ffffff" };
-            this.debugText = this.add.text(0, 0, "Play state", debugTextStyle);
-            this.debugText.alpha = 0;
+            var debugTextStyle = { font: "12px monospace", fill: "#00ff00" };
+            this.debugText = this.add.text(0, 0, "", debugTextStyle);
 
             this.bases = [];
             for (var i = 0; i < 4; i++) {
@@ -22,6 +25,7 @@ module tdyctw {
                 base.events.onInputDown.add(function (sprite: BaseSprite, pointer: any) {
                     sprite.animations.play("pulse", 6, true);
                     this.selectedBase = sprite;
+                    this.selectedBaseIndex = sprite.baseIndex;
                 }, this);
                 this.bases.push(base);
                 this.add.existing(base);
@@ -31,38 +35,35 @@ module tdyctw {
                 for (var i = 0; i < this.bases.length; i++) {
                     this.bases[i].animations.stop(null, true);
                     this.selectedBase = null;
+                    this.selectedBaseIndex = -1;
                 }
             }, this);
 
             this.trailLine = this.game.add.graphics(0, 0);
+            this.trailOffset = 0;
         }
 
         update() {
             this.trailLine.clear();
-            this.debugText.text = "selectedBase: " + this.selectedBase;
+            this.debugText.text = "FPS: " + this.game.time.fps;
             if (this.selectedBase != null) {
-                /*
-                this.trailLine.lineStyle(1, 0x008800, 1);
-                this.trailLine.moveTo(this.selectedBase.x, this.selectedBase.y);
-                this.trailLine.lineTo(this.game.input.x, this.game.input.y);
-                */
-                this.trailLine.lineStyle(1, 0x008800, 1);
+                this.trailLine.lineStyle(this.trailWidth, 0x008800, 1.0);
                 var draw = true;
-                var fromX = this.selectedBase.x;
-                var fromY = this.selectedBase.y;
-                var toX = this.game.input.x;
-                var toY = this.game.input.y;
-                var x = fromX;
-                var y = fromY;
-                var size = 2;
-                for (var i = 0.05; i <= 1; i = i + 0.05) {
-                    this.trailLine.moveTo(x, y);
-                    x = fromX + (toX - fromX) * i;
-                    y = fromY + (toY - fromY) * i;
+                var point = this.selectedBase.position.clone();
+                var norm = Phaser.Point.subtract(this.game.input.position, this.selectedBase.position).normalize().setMagnitude(this.trailLength);
+                var offset = norm.clone().setMagnitude(this.trailOffset);
+                point.add(offset.x, offset.y);
+                while (Phaser.Point.distance(this.selectedBase.position, point) < Phaser.Point.distance(this.selectedBase.position, this.game.input.position)) {
+                    this.trailLine.moveTo(point.x, point.y);
+                    point.add(norm.x, norm.y);
                     if (draw) {
-                        this.trailLine.lineTo(x, y);
+                        this.trailLine.lineTo(point.x, point.y);
                     }
                     draw = !draw;
+                }
+                this.trailOffset += this.trailOffsetIncrement;
+                if (this.trailOffset >= this.trailLength * 2) {
+                    this.trailOffset = 0;
                 }
             }
         }

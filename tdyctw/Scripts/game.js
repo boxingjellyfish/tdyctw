@@ -1,8 +1,13 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var tdyctw;
 (function (tdyctw) {
     var Game = (function (_super) {
@@ -22,20 +27,43 @@ var tdyctw;
 })(tdyctw || (tdyctw = {}));
 var tdyctw;
 (function (tdyctw) {
-    var BaseSprite = (function (_super) {
-        __extends(BaseSprite, _super);
-        function BaseSprite(game, x, y) {
-            var _this = _super.call(this, game, x, y, "baseSprite") || this;
-            _this.anchor.setTo(0.5, 0.5);
-            _this.inputEnabled = true;
-            _this.animations.add("pulse");
+    var Misc = (function () {
+        function Misc() {
+        }
+        Misc.generateUID = function () {
+            var firstPart = (Math.random() * 46656) | 0;
+            var secondPart = (Math.random() * 46656) | 0;
+            var firstPartString = ("000" + firstPart.toString(36)).slice(-3);
+            var secondPartString = ("000" + secondPart.toString(36)).slice(-3);
+            return firstPartString + secondPartString;
+        };
+        return Misc;
+    }());
+    tdyctw.Misc = Misc;
+})(tdyctw || (tdyctw = {}));
+var tdyctw;
+(function (tdyctw) {
+    var ZoomCamera = (function (_super) {
+        __extends(ZoomCamera, _super);
+        function ZoomCamera(game) {
+            var _this = _super.call(this, game) || this;
+            _this.scale.setTo(ZoomCamera.ZOOM_RESET);
             return _this;
         }
-        BaseSprite.prototype.update = function () {
+        ZoomCamera.prototype.zoomTo = function (scale) {
+            this.currentZoom = scale;
+            this.game.add.tween(this.scale).to({ x: scale, y: scale }, 200).start();
         };
-        return BaseSprite;
-    }(Phaser.Sprite));
-    tdyctw.BaseSprite = BaseSprite;
+        ZoomCamera.prototype.inputPosition = function () {
+            var inverse = 1 / this.currentZoom;
+            return this.game.input.position.clone().multiply(inverse, inverse);
+        };
+        return ZoomCamera;
+    }(Phaser.Group));
+    ZoomCamera.ZOOM_RESET = 1;
+    ZoomCamera.ZOOM_CLOSE = 1.2;
+    ZoomCamera.ZOOM_FAR = 0.8;
+    tdyctw.ZoomCamera = ZoomCamera;
 })(tdyctw || (tdyctw = {}));
 var tdyctw;
 (function (tdyctw) {
@@ -220,42 +248,19 @@ var tdyctw;
 })(tdyctw || (tdyctw = {}));
 var tdyctw;
 (function (tdyctw) {
-    var Misc = (function () {
-        function Misc() {
-        }
-        Misc.generateUID = function () {
-            var firstPart = (Math.random() * 46656) | 0;
-            var secondPart = (Math.random() * 46656) | 0;
-            var firstPartString = ("000" + firstPart.toString(36)).slice(-3);
-            var secondPartString = ("000" + secondPart.toString(36)).slice(-3);
-            return firstPartString + secondPartString;
-        };
-        return Misc;
-    }());
-    tdyctw.Misc = Misc;
-})(tdyctw || (tdyctw = {}));
-var tdyctw;
-(function (tdyctw) {
-    var ZoomCamera = (function (_super) {
-        __extends(ZoomCamera, _super);
-        function ZoomCamera(game) {
-            var _this = _super.call(this, game) || this;
-            _this.scale.setTo(ZoomCamera.ZOOM_RESET);
+    var BaseSprite = (function (_super) {
+        __extends(BaseSprite, _super);
+        function BaseSprite(game, x, y) {
+            var _this = _super.call(this, game, x, y, "baseSprite") || this;
+            _this.anchor.setTo(0.5, 0.5);
+            _this.inputEnabled = true;
+            _this.animations.add("pulse");
             return _this;
         }
-        ZoomCamera.prototype.zoomTo = function (scale) {
-            this.currentZoom = scale;
-            this.game.add.tween(this.scale).to({ x: scale, y: scale }, 200).start();
+        BaseSprite.prototype.update = function () {
         };
-        ZoomCamera.prototype.inputPosition = function () {
-            var inverse = 1 / this.currentZoom;
-            return this.game.input.position.clone().multiply(inverse, inverse);
-        };
-        return ZoomCamera;
-    }(Phaser.Group));
-    ZoomCamera.ZOOM_RESET = 1;
-    ZoomCamera.ZOOM_CLOSE = 1.2;
-    ZoomCamera.ZOOM_FAR = 0.8;
-    tdyctw.ZoomCamera = ZoomCamera;
+        return BaseSprite;
+    }(Phaser.Sprite));
+    tdyctw.BaseSprite = BaseSprite;
 })(tdyctw || (tdyctw = {}));
 //# sourceMappingURL=game.js.map

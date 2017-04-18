@@ -23,7 +23,6 @@ module tdyctw {
             this.logo = this.add.sprite(this.game.world.centerX, this.game.world.centerY, "bjlogo");
             this.logo.anchor.setTo(0.5, 0.5);
             this.logo.alpha = 0;
-            this.logo.scale.setTo(4, 4);
             
             var fadeIn = this.add.tween(this.logo).to({ alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
             fadeIn.onComplete.add(this.fadeInComplete, this);

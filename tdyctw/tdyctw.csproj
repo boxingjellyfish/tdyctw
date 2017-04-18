@@ -192,6 +192,7 @@
     <TypeScriptCompile Include="TypeScript\State\MainMenuState.ts" />
     <TypeScriptCompile Include="TypeScript\State\PreloaderState.ts" />
     <TypeScriptCompile Include="TypeScript\State\BootState.ts" />
+    <TypeScriptCompile Include="TypeScript\Util\ZoomCamera.ts" />
     <TypeScriptCompile Include="TypeScript\Util\Misc.ts" />
   </ItemGroup>
   <ItemGroup>

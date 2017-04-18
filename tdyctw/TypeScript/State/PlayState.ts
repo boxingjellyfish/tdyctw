@@ -13,10 +13,14 @@ module tdyctw {
         trailOffsetIncrement: number = 0.5;
         trailLength: number = 4;
         trailWidth: number = 1;
+        zoomCamera: ZoomCamera;
 
         create() {
             var debugTextStyle = { font: "12px monospace", fill: "#00ff00" };
             this.debugText = this.add.text(0, 0, "", debugTextStyle);
+
+            this.zoomCamera = new ZoomCamera(this.game);
+            this.add.existing(this.zoomCamera);
 
             this.bases = [];
             for (var i = 0; i < 4; i++) {
@@ -26,9 +30,11 @@ module tdyctw {
                     sprite.animations.play("pulse", 6, true);
                     this.selectedBase = sprite;
                     this.selectedBaseIndex = sprite.baseIndex;
+                    this.zoomCamera.zoomTo(ZoomCamera.ZOOM_FAR);
                 }, this);
                 this.bases.push(base);
-                this.add.existing(base);
+                //this.add.existing(base);
+                this.zoomCamera.add(base);
             }
 
             this.game.input.onDown.add(function (sprite: BaseSprite, pointer: any) {
@@ -37,23 +43,26 @@ module tdyctw {
                     this.selectedBase = null;
                     this.selectedBaseIndex = -1;
                 }
+                this.zoomCamera.zoomTo(ZoomCamera.ZOOM_CLOSE);
             }, this);
 
-            this.trailLine = this.game.add.graphics(0, 0);
+            //this.trailLine = this.game.add.graphics(0, 0);
+            this.trailLine = new Phaser.Graphics(this.game, 0, 0);
+            this.zoomCamera.add(this.trailLine);
             this.trailOffset = 0;
         }
 
         update() {
             this.trailLine.clear();
-            this.debugText.text = "FPS: " + this.game.time.fps;
+            this.debugText.text = "FPS: " + this.game.time.fps + " " + this.game.input.position;
             if (this.selectedBase != null) {
                 this.trailLine.lineStyle(this.trailWidth, 0x008800, 1.0);
                 var draw = true;
                 var point = this.selectedBase.position.clone();
-                var norm = Phaser.Point.subtract(this.game.input.position, this.selectedBase.position).normalize().setMagnitude(this.trailLength);
+                var norm = Phaser.Point.subtract(this.zoomCamera.inputPosition(), this.selectedBase.position).normalize().setMagnitude(this.trailLength);
                 var offset = norm.clone().setMagnitude(this.trailOffset);
                 point.add(offset.x, offset.y);
-                while (Phaser.Point.distance(this.selectedBase.position, point) < Phaser.Point.distance(this.selectedBase.position, this.game.input.position)) {
+                while (Phaser.Point.distance(this.selectedBase.position, point) < Phaser.Point.distance(this.selectedBase.position, this.zoomCamera.inputPosition())) {
                     this.trailLine.moveTo(point.x, point.y);
                     point.add(norm.x, norm.y);
                     if (draw) {

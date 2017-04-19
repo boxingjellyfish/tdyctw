@@ -11,33 +11,32 @@ module tdyctw {
 
         inputEnabled: boolean;
 
+        titleStyle: any = { font: "18px 'Nova Mono'", fill: "#00ff00" };
+        optionStyle: any = { font: "14px 'Share Tech Mono'", fill: "#00ff00" };
+
         create() {
             this.inputEnabled = false;
             
-            var titleStyle = { font: "18px monospace", fill: "#00ff00", align: "center" };
             var titleString = this.game.cache.getJSON("strings")["main_menu_title"];
-            this.titleText = this.add.text(this.game.world.centerX, this.game.world.centerY, titleString, titleStyle);
+            this.titleText = this.add.text(this.game.world.centerX, this.game.world.centerY, titleString, this.titleStyle);
             this.titleText.anchor.set(0.5);
             this.titleText.alpha = 0;
-
-            var optionStartStyle = { font: "14px monospace", fill: "#00ff00", align: "center" };
+            
             var optionStartString = this.game.cache.getJSON("strings")["main_menu_start"];
-            this.optionStartText = this.add.text(this.game.world.centerX, this.game.world.centerY * 1.25, optionStartString, optionStartStyle);
+            this.optionStartText = this.add.text(this.game.world.centerX, this.game.world.centerY * 1.25, optionStartString, this.optionStyle);
             this.optionStartText.anchor.set(0.5);
             this.optionStartText.alpha = 0;
             this.optionStartText.inputEnabled = true;
             this.optionStartText.events.onInputDown.add(this.startGame, this);
-
-            var option2Style = { font: "14px monospace", fill: "#00ff00", align: "center" };
+            
             var option2String = this.game.cache.getJSON("strings")["main_menu_placeholder"];
-            this.option2Text = this.add.text(this.game.world.centerX, this.optionStartText.y + 25, option2String, option2Style);
+            this.option2Text = this.add.text(this.game.world.centerX, this.optionStartText.y + 25, option2String, this.optionStyle);
             this.option2Text.anchor.set(0.5);
             this.option2Text.alpha = 0;
             this.option2Text.inputEnabled = true;
-
-            var option3Style = { font: "14px monospace", fill: "#00ff00", align: "center" };
+            
             var option3String = this.game.cache.getJSON("strings")["main_menu_placeholder"];
-            this.option3Text = this.add.text(this.game.world.centerX, this.optionStartText.y + 50, option3String, option3Style);
+            this.option3Text = this.add.text(this.game.world.centerX, this.optionStartText.y + 50, option3String, this.optionStyle);
             this.option3Text.anchor.set(0.5);
             this.option3Text.alpha = 0;
             this.option3Text.inputEnabled = true;

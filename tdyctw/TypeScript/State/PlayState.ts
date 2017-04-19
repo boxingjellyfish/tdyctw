@@ -16,7 +16,7 @@ module tdyctw {
         zoomCamera: ZoomCamera;
 
         create() {
-            var debugTextStyle = { font: "12px monospace", fill: "#00ff00" };
+            var debugTextStyle = { font: "12px 'Share Tech Mono'", fill: "#00ff00" };
             this.debugText = this.add.text(0, 0, "", debugTextStyle);
 
             this.zoomCamera = new ZoomCamera(this.game);
@@ -30,7 +30,6 @@ module tdyctw {
                     sprite.animations.play("pulse", 6, true);
                     this.selectedBase = sprite;
                     this.selectedBaseIndex = sprite.baseIndex;
-                    this.zoomCamera.zoomTo(ZoomCamera.ZOOM_FAR);
                 }, this);
                 this.bases.push(base);
                 //this.add.existing(base);
@@ -43,7 +42,6 @@ module tdyctw {
                     this.selectedBase = null;
                     this.selectedBaseIndex = -1;
                 }
-                this.zoomCamera.zoomTo(ZoomCamera.ZOOM_CLOSE);
             }, this);
 
             //this.trailLine = this.game.add.graphics(0, 0);

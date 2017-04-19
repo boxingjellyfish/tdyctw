@@ -4,8 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
-    <link href="~/Content/css/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/css/Site.css?@(DateTime.Now.Ticks)" rel="stylesheet" type="text/css" />
     <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nova+Mono" rel="stylesheet">
     <script src="~/Scripts/modernizr-2.8.3.js"></script>
     <script src="~/Scripts/jquery-3.1.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
@@ -34,6 +36,7 @@
         <footer>
             <p>&copy; @DateTime.Now.Year - TDYCTW</p>
         </footer>
+        <div class="fontLoader">&nbsp;</div>
     </div>
 </body>
 </html>

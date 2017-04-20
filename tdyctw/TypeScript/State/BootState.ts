@@ -5,8 +5,10 @@ module tdyctw {
     export class BootState extends Phaser.State {
 
         logo: Phaser.Sprite;
+        introSound: Phaser.Sound;
 
         preload() {
+            this.game.load.audio("introSound", "/Content/audio/intro.mp3");
             this.load.image("bjlogo", "/Content/img/bjlogo.png");
         }
 
@@ -24,12 +26,15 @@ module tdyctw {
             this.logo.anchor.setTo(0.5, 0.5);
             this.logo.alpha = 0;
             
-            var fadeIn = this.add.tween(this.logo).to({ alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
+            this.introSound = this.game.add.audio("introSound", 0.5);
+            this.introSound.play();
+            
+            var fadeIn = this.add.tween(this.logo).to({ alpha: 1 }, 1200, Phaser.Easing.Linear.None, true);
             fadeIn.onComplete.add(this.fadeInComplete, this);
         }
 
         fadeInComplete() {
-            var fadeOut = this.add.tween(this.logo).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 1000);
+            var fadeOut = this.add.tween(this.logo).to({ alpha: 0 }, 1200, Phaser.Easing.Linear.None, true, 1000);
             fadeOut.onComplete.add(this.startPreloader, this);
         }
 

@@ -45,6 +45,7 @@ var tdyctw;
             return _super !== null && _super.apply(this, arguments) || this;
         }
         BootState.prototype.preload = function () {
+            this.game.load.audio("introSound", "/Content/audio/intro.mp3");
             this.load.image("bjlogo", "/Content/img/bjlogo.png");
         };
         BootState.prototype.create = function () {
@@ -54,11 +55,13 @@ var tdyctw;
             this.logo = this.add.sprite(this.game.world.centerX, this.game.world.centerY, "bjlogo");
             this.logo.anchor.setTo(0.5, 0.5);
             this.logo.alpha = 0;
-            var fadeIn = this.add.tween(this.logo).to({ alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
+            this.introSound = this.game.add.audio("introSound", 0.5);
+            this.introSound.play();
+            var fadeIn = this.add.tween(this.logo).to({ alpha: 1 }, 1200, Phaser.Easing.Linear.None, true);
             fadeIn.onComplete.add(this.fadeInComplete, this);
         };
         BootState.prototype.fadeInComplete = function () {
-            var fadeOut = this.add.tween(this.logo).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 1000);
+            var fadeOut = this.add.tween(this.logo).to({ alpha: 0 }, 1200, Phaser.Easing.Linear.None, true, 1000);
             fadeOut.onComplete.add(this.startPreloader, this);
         };
         BootState.prototype.startPreloader = function () {
@@ -90,22 +93,32 @@ var tdyctw;
             this.optionStartText.alpha = 0;
             this.optionStartText.inputEnabled = true;
             this.optionStartText.events.onInputDown.add(this.startGame, this);
-            var option2String = this.game.cache.getJSON("strings")["main_menu_placeholder"];
+            this.optionStartText.events.onInputOver.add(this.playRolloverSound, this);
+            var option2String = this.game.cache.getJSON("strings")["main_menu_lorem"];
             this.option2Text = this.add.text(this.game.world.centerX, this.optionStartText.y + 25, option2String, this.optionStyle);
             this.option2Text.anchor.set(0.5);
             this.option2Text.alpha = 0;
             this.option2Text.inputEnabled = true;
-            var option3String = this.game.cache.getJSON("strings")["main_menu_placeholder"];
+            this.option2Text.events.onInputOver.add(this.playRolloverSound, this);
+            var option3String = this.game.cache.getJSON("strings")["main_menu_ipsum"];
             this.option3Text = this.add.text(this.game.world.centerX, this.optionStartText.y + 50, option3String, this.optionStyle);
             this.option3Text.anchor.set(0.5);
             this.option3Text.alpha = 0;
             this.option3Text.inputEnabled = true;
+            this.option3Text.events.onInputOver.add(this.playRolloverSound, this);
+            this.hoverSound = this.game.add.audio("menuHoverSFX", 1.0);
+            this.clickSound = this.game.add.audio("menuClickSFX", 1.0);
+            this.menuMusic = this.game.add.audio("menuMusic", 0.5, true);
+            this.menuMusic.onDecoded.add(this.musicReady, this);
+        };
+        MainMenuState.prototype.musicReady = function () {
+            this.menuMusic.loopFull();
             var fadeInTitle = this.add.tween(this.titleText).to({ alpha: 1 }, 2000, Phaser.Easing.Linear.None, true);
             fadeInTitle.onComplete.add(function () {
                 this.add.tween(this.optionStartText).to({ alpha: 0.75 }, 1000, Phaser.Easing.Linear.None, true);
                 this.add.tween(this.option2Text).to({ alpha: 0.75 }, 1000, Phaser.Easing.Linear.None, true, 500);
                 this.add.tween(this.option3Text).to({ alpha: 0.75 }, 1000, Phaser.Easing.Linear.None, true, 1000).onComplete.add(function () {
-                    this.inputEnabled = true;
+                    this.toggleInputEnabled(true);
                 }, this);
             }, this);
         };
@@ -117,12 +130,24 @@ var tdyctw;
             }
         };
         MainMenuState.prototype.startGame = function () {
-            this.inputEnabled = false;
-            this.add.tween(this.titleText).to({ alpha: 0 }, 500, Phaser.Easing.Linear.None, true);
-            this.add.tween(this.option2Text).to({ alpha: 0 }, 500, Phaser.Easing.Linear.None, true);
-            this.add.tween(this.option3Text).to({ alpha: 0 }, 500, Phaser.Easing.Linear.None, true).onComplete.add(function () {
-                this.game.state.start("PlayState", true, false);
-            }, this);
+            if (this.inputEnabled) {
+                this.clickSound.play();
+                this.inputEnabled = false;
+                this.menuMusic.fadeOut(1000);
+                this.add.tween(this.titleText).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
+                this.add.tween(this.option2Text).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
+                this.add.tween(this.option3Text).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true).onComplete.add(function () {
+                    this.game.state.start("PlayState", true, false);
+                }, this);
+            }
+        };
+        MainMenuState.prototype.toggleInputEnabled = function (enabled) {
+            this.inputEnabled = enabled;
+        };
+        MainMenuState.prototype.playRolloverSound = function () {
+            if (this.inputEnabled) {
+                this.hoverSound.play();
+            }
         };
         return MainMenuState;
     }(Phaser.State));
@@ -207,6 +232,9 @@ var tdyctw;
             this.load.json("strings", "/Content/txt/strings_en.json");
             this.load.image("base", "/Content/img/base.png");
             this.load.spritesheet("baseSprite", "/Content/img/base_sprite.png", 32, 32, 2);
+            this.game.load.audio("menuMusic", "/Content/audio/menu.mp3", true);
+            this.game.load.audio("menuHoverSFX", "/Content/audio/beep-29.wav");
+            this.game.load.audio("menuClickSFX", "/Content/audio/button-35.wav");
         };
         PreloaderState.prototype.create = function () {
             this.game.state.start("MainMenuState", true, false);

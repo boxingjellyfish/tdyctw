@@ -114,6 +114,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\audio\beep-29.wav" />
+    <Content Include="Content\audio\button-33a.wav" />
+    <Content Include="Content\audio\button-35.wav" />
+    <Content Include="Content\audio\button-46.wav" />
+    <Content Include="Content\audio\intro.mp3" />
+    <Content Include="Content\audio\menu.mp3" />
+    <Content Include="Content\audio\rollover2.wav" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />

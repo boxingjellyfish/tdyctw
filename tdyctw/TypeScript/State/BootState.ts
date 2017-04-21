@@ -8,8 +8,8 @@ module tdyctw {
         introSound: Phaser.Sound;
 
         preload() {
-            this.game.load.audio("introSound", "/Content/audio/intro.mp3");
-            this.load.image("bjlogo", "/Content/img/bjlogo.png");
+            this.load.audio("introSound", "/Content/audio/intro.mp3");
+            this.load.image("bjlogo", "/Content/img/bjs-green.png");
         }
 
         create() {
@@ -22,7 +22,7 @@ module tdyctw {
             this.game.time.advancedTiming = true;
 
             // Studio logo
-            this.logo = this.add.sprite(this.game.world.centerX, this.game.world.centerY, "bjlogo");
+            this.logo = this.add.sprite(this.world.centerX, this.world.centerY, "bjlogo");
             this.logo.anchor.setTo(0.5, 0.5);
             this.logo.alpha = 0;
             
@@ -39,7 +39,7 @@ module tdyctw {
         }
 
         startPreloader() {
-            this.game.state.start("PreloaderState", true, false);
+            this.state.start("PreloaderState", true, false);
         }
 
     }

@@ -127,6 +127,8 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\img\base.png" />
     <Content Include="Content\img\base_sprite.png" />
+    <Content Include="Content\img\bjs-green.png" />
+    <Content Include="Content\img\bjs-red.png" />
     <Content Include="Content\img\cursor.png" />
     <Content Include="favicon.ico" />
     <Content Include="Content\img\bjlogo.png" />

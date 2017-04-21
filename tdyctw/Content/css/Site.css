@@ -16,6 +16,10 @@ textarea {
     max-width: 280px;
 }
 
-.fontLoader {
-    font-family: 'Share Tech Mono', 'Nova Mono', monospace;
+.fontLoader1 {
+    font-family: 'Share Tech Mono', monospace;
+}
+
+.fontLoader2 {
+    font-family: 'Nova Mono', monospace;
 }

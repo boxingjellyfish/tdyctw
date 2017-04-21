@@ -1,16 +1,18 @@
-﻿<!DOCTYPE html>
+﻿@using tdyctw.Code.Extensions;
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
-    <link href="~/Content/css/Site.css?@(DateTime.Now.Ticks)" rel="stylesheet" type="text/css" />
-    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/css/site.css?@(MiscExtensions.DebugResourceSuffix())" rel="stylesheet" type="text/css" />
+    <link href="~/Content/css/bootstrap-3.3.7.min.css" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Nova+Mono" rel="stylesheet">
     <script src="~/Scripts/modernizr-2.8.3.js"></script>
     <script src="~/Scripts/jquery-3.1.1.min.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/bootstrap-3.3.7.min.js"></script>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -24,8 +26,7 @@
                 @Html.ActionLink("TDYCTW", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                </ul>
+                <ul class="nav navbar-nav"></ul>
             </div>
         </div>
     </div>
@@ -34,9 +35,8 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - TDYCTW</p>
+            <p>&copy; @DateTime.Now.Year - TDYCTW <span class="fontLoader1 fontLoader2">&nbsp;</span></p>
         </footer>
-        <div class="fontLoader">&nbsp;</div>
     </div>
 </body>
 </html>

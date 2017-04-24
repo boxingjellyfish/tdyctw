@@ -1,13 +1,8 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var tdyctw;
 (function (tdyctw) {
     var Game = (function (_super) {
@@ -27,83 +22,20 @@ var tdyctw;
 })(tdyctw || (tdyctw = {}));
 var tdyctw;
 (function (tdyctw) {
-    var Misc = (function () {
-        function Misc() {
-        }
-        Misc.generateUID = function () {
-            var firstPart = (Math.random() * 46656) | 0;
-            var secondPart = (Math.random() * 46656) | 0;
-            var firstPartString = ("000" + firstPart.toString(36)).slice(-3);
-            var secondPartString = ("000" + secondPart.toString(36)).slice(-3);
-            return firstPartString + secondPartString;
-        };
-        return Misc;
-    }());
-    tdyctw.Misc = Misc;
-})(tdyctw || (tdyctw = {}));
-var tdyctw;
-(function (tdyctw) {
-    var ZoomCamera = (function (_super) {
-        __extends(ZoomCamera, _super);
-        function ZoomCamera(game) {
-            var _this = _super.call(this, game) || this;
-            _this.zoomButtonStyle = { font: "20px 'Share Tech Mono'", fill: "#00ff00" };
-            _this.zoomTo(ZoomCamera.ZOOM_RESET);
-            _this.zoomInButton = _this.game.add.text(_this.game.world.width - 60, 10, "+", _this.zoomButtonStyle);
-            _this.zoomInButton.inputEnabled = true;
-            _this.zoomInButton.alpha = 0.75;
-            _this.zoomInButton.events.onInputDown.add(function () {
-                this.zoomIn();
-            }, _this);
-            _this.zoomResetButton = _this.game.add.text(_this.game.world.width - 40, 10, "*", _this.zoomButtonStyle);
-            _this.zoomResetButton.inputEnabled = true;
-            _this.zoomResetButton.alpha = 0.75;
-            _this.zoomResetButton.events.onInputDown.add(function () {
-                this.zoomTo(ZoomCamera.ZOOM_RESET);
-            }, _this);
-            _this.zoomOutButton = _this.game.add.text(_this.game.world.width - 20, 10, "-", _this.zoomButtonStyle);
-            _this.zoomOutButton.inputEnabled = true;
-            _this.zoomOutButton.alpha = 0.75;
-            _this.zoomOutButton.events.onInputDown.add(function () {
-                this.zoomOut();
-            }, _this);
+    var BaseSprite = (function (_super) {
+        __extends(BaseSprite, _super);
+        function BaseSprite(game, x, y) {
+            var _this = _super.call(this, game, x, y, "baseSprite") || this;
+            _this.anchor.setTo(0.5, 0.5);
+            _this.inputEnabled = true;
+            _this.animations.add("pulse");
             return _this;
         }
-        ZoomCamera.prototype.zoomTo = function (scale) {
-            this.currentZoom = scale;
-            this.game.add.tween(this.scale).to({ x: scale, y: scale }, 200).start();
+        BaseSprite.prototype.update = function () {
         };
-        ZoomCamera.prototype.inputPosition = function () {
-            var inverse = 1 / this.currentZoom;
-            return this.game.input.position.clone().multiply(inverse, inverse);
-        };
-        ZoomCamera.prototype.zoomIn = function () {
-            if (this.currentZoom <= ZoomCamera.ZOOM_MAX) {
-                this.zoomTo(this.currentZoom + ZoomCamera.ZOOM_STEP);
-            }
-        };
-        ZoomCamera.prototype.zoomOut = function () {
-            if (this.currentZoom >= ZoomCamera.ZOOM_MIN) {
-                this.zoomTo(this.currentZoom - ZoomCamera.ZOOM_STEP);
-            }
-        };
-        ZoomCamera.prototype.update = function () {
-            this.zoomInButton.alpha = this.zoomInButton.input.pointerOver() ? 1 : 0.75;
-            this.zoomResetButton.alpha = this.zoomResetButton.input.pointerOver() ? 1 : 0.75;
-            this.zoomOutButton.alpha = this.zoomOutButton.input.pointerOver() ? 1 : 0.75;
-            this.zoomInButton.position = new Phaser.Point(this.game.world.width - 60, 10);
-            this.zoomResetButton.position = new Phaser.Point(this.game.world.width - 40, 10);
-            this.zoomOutButton.position = new Phaser.Point(this.game.world.width - 20, 10);
-        };
-        return ZoomCamera;
-    }(Phaser.Group));
-    ZoomCamera.ZOOM_RESET = 1;
-    ZoomCamera.ZOOM_CLOSE = 1.2;
-    ZoomCamera.ZOOM_FAR = 0.8;
-    ZoomCamera.ZOOM_MAX = 2;
-    ZoomCamera.ZOOM_MIN = 0.5;
-    ZoomCamera.ZOOM_STEP = 0.1;
-    tdyctw.ZoomCamera = ZoomCamera;
+        return BaseSprite;
+    }(Phaser.Sprite));
+    tdyctw.BaseSprite = BaseSprite;
 })(tdyctw || (tdyctw = {}));
 var tdyctw;
 (function (tdyctw) {
@@ -264,12 +196,45 @@ var tdyctw;
             }, this);
             this.trailLine = this.add.graphics(0, 0);
             this.trailOffset = 0;
+            this.generateMap();
+            this.voronoiDebug = new Phaser.Graphics(this.game, 0, 0);
+            this.zoomCamera.add(this.voronoiDebug);
         };
         PlayState.prototype.update = function () {
+            this.voronoiDebug.clear();
+            this.voronoiDebug.lineStyle(1, 0x0000ff, 1);
+            for (var i = 0; i < this.voronoiDiagram.edges.length; i++) {
+                var e = this.voronoiDiagram.edges[i];
+                this.voronoiDebug.moveTo(e.va.x, e.va.y);
+                this.voronoiDebug.lineTo(e.vb.x, e.vb.y);
+            }
+            this.voronoiDebug.lineStyle(1, 0xff0000, 1);
+            for (var i = 0; i < this.voronoiDiagram.vertices.length; i++) {
+                var v = this.voronoiDiagram.vertices[i];
+                this.voronoiDebug.moveTo(v.x, v.y);
+                this.voronoiDebug.lineTo(v.x + 1, v.y + 1);
+            }
+            this.voronoiDebug.lineStyle(1, 0xffff00, 1);
+            for (var i = 0; i < this.voronoiPoints.length; i++) {
+                var p = this.voronoiPoints[i];
+                this.voronoiDebug.moveTo(p.x, p.y);
+                this.voronoiDebug.lineTo(p.x + 1, p.y + 1);
+            }
+            this.voronoiDebug.lineStyle(1, 0xff00ff, 1);
+            for (var i = this.delaunayDiagram.length; i;) {
+                --i;
+                var p1 = new Phaser.Point(this.delaunayPoints[this.delaunayDiagram[i]][0], this.delaunayPoints[this.delaunayDiagram[i]][1]);
+                --i;
+                var p2 = new Phaser.Point(this.delaunayPoints[this.delaunayDiagram[i]][0], this.delaunayPoints[this.delaunayDiagram[i]][1]);
+                --i;
+                var p3 = new Phaser.Point(this.delaunayPoints[this.delaunayDiagram[i]][0], this.delaunayPoints[this.delaunayDiagram[i]][1]);
+                this.voronoiDebug.moveTo(p1.x, p1.y);
+                this.voronoiDebug.lineTo(p2.x, p2.y);
+                this.voronoiDebug.lineTo(p3.x, p3.y);
+            }
             this.trailLine.clear();
-            this.debugText.text = "FPS: " + this.time.fps + "|" + this.input.position + "|" + this.zoomCamera.inputPosition();
+            this.trailLine.lineStyle(this.trailWidth, 0x008800, 1.0);
             if (this.selectedBase != null) {
-                this.trailLine.lineStyle(this.trailWidth, 0x008800, 1.0);
                 var zoom = this.zoomCamera.currentZoom;
                 var basePosition = this.selectedBase.position.clone().multiply(zoom, zoom);
                 var draw = true;
@@ -302,6 +267,21 @@ var tdyctw;
             }, this);
             this.bases.push(base);
             this.zoomCamera.add(base);
+        };
+        PlayState.prototype.generateMap = function () {
+            var voronoi = new Voronoi();
+            var bbox = { xl: 0, xr: this.world.width, yt: 0, yb: this.world.height };
+            this.voronoiPoints = [];
+            var sites = [];
+            this.delaunayPoints = [];
+            while (sites.length < 100) {
+                var p = new Phaser.Point(this.rnd.integerInRange(0, this.world.width), this.rnd.integerInRange(0, this.world.height));
+                this.voronoiPoints.push(p);
+                sites.push({ x: p.x, y: p.y });
+                this.delaunayPoints.push([p.x, p.y]);
+            }
+            this.voronoiDiagram = voronoi.compute(sites, bbox);
+            this.delaunayDiagram = Delaunay.triangulate(this.delaunayPoints);
         };
         return PlayState;
     }(Phaser.State));
@@ -350,19 +330,82 @@ var tdyctw;
 })(tdyctw || (tdyctw = {}));
 var tdyctw;
 (function (tdyctw) {
-    var BaseSprite = (function (_super) {
-        __extends(BaseSprite, _super);
-        function BaseSprite(game, x, y) {
-            var _this = _super.call(this, game, x, y, "baseSprite") || this;
-            _this.anchor.setTo(0.5, 0.5);
-            _this.inputEnabled = true;
-            _this.animations.add("pulse");
+    var Misc = (function () {
+        function Misc() {
+        }
+        Misc.generateUID = function () {
+            var firstPart = (Math.random() * 46656) | 0;
+            var secondPart = (Math.random() * 46656) | 0;
+            var firstPartString = ("000" + firstPart.toString(36)).slice(-3);
+            var secondPartString = ("000" + secondPart.toString(36)).slice(-3);
+            return firstPartString + secondPartString;
+        };
+        return Misc;
+    }());
+    tdyctw.Misc = Misc;
+})(tdyctw || (tdyctw = {}));
+var tdyctw;
+(function (tdyctw) {
+    var ZoomCamera = (function (_super) {
+        __extends(ZoomCamera, _super);
+        function ZoomCamera(game) {
+            var _this = _super.call(this, game) || this;
+            _this.zoomButtonStyle = { font: "20px 'Share Tech Mono'", fill: "#00ff00" };
+            _this.zoomTo(ZoomCamera.ZOOM_RESET);
+            _this.zoomInButton = _this.game.add.text(_this.game.world.width - 60, 10, "+", _this.zoomButtonStyle);
+            _this.zoomInButton.inputEnabled = true;
+            _this.zoomInButton.alpha = 0.75;
+            _this.zoomInButton.events.onInputDown.add(function () {
+                this.zoomIn();
+            }, _this);
+            _this.zoomResetButton = _this.game.add.text(_this.game.world.width - 40, 10, "*", _this.zoomButtonStyle);
+            _this.zoomResetButton.inputEnabled = true;
+            _this.zoomResetButton.alpha = 0.75;
+            _this.zoomResetButton.events.onInputDown.add(function () {
+                this.zoomTo(ZoomCamera.ZOOM_RESET);
+            }, _this);
+            _this.zoomOutButton = _this.game.add.text(_this.game.world.width - 20, 10, "-", _this.zoomButtonStyle);
+            _this.zoomOutButton.inputEnabled = true;
+            _this.zoomOutButton.alpha = 0.75;
+            _this.zoomOutButton.events.onInputDown.add(function () {
+                this.zoomOut();
+            }, _this);
             return _this;
         }
-        BaseSprite.prototype.update = function () {
+        ZoomCamera.prototype.zoomTo = function (scale) {
+            this.currentZoom = scale;
+            this.game.add.tween(this.scale).to({ x: scale, y: scale }, 200).start();
         };
-        return BaseSprite;
-    }(Phaser.Sprite));
-    tdyctw.BaseSprite = BaseSprite;
+        ZoomCamera.prototype.inputPosition = function () {
+            var inverse = 1 / this.currentZoom;
+            return this.game.input.position.clone().multiply(inverse, inverse);
+        };
+        ZoomCamera.prototype.zoomIn = function () {
+            if (this.currentZoom <= ZoomCamera.ZOOM_MAX) {
+                this.zoomTo(this.currentZoom + ZoomCamera.ZOOM_STEP);
+            }
+        };
+        ZoomCamera.prototype.zoomOut = function () {
+            if (this.currentZoom >= ZoomCamera.ZOOM_MIN) {
+                this.zoomTo(this.currentZoom - ZoomCamera.ZOOM_STEP);
+            }
+        };
+        ZoomCamera.prototype.update = function () {
+            this.zoomInButton.alpha = this.zoomInButton.input.pointerOver() ? 1 : 0.75;
+            this.zoomResetButton.alpha = this.zoomResetButton.input.pointerOver() ? 1 : 0.75;
+            this.zoomOutButton.alpha = this.zoomOutButton.input.pointerOver() ? 1 : 0.75;
+            this.zoomInButton.position = new Phaser.Point(this.game.world.width - 60, 10);
+            this.zoomResetButton.position = new Phaser.Point(this.game.world.width - 40, 10);
+            this.zoomOutButton.position = new Phaser.Point(this.game.world.width - 20, 10);
+        };
+        return ZoomCamera;
+    }(Phaser.Group));
+    ZoomCamera.ZOOM_RESET = 1;
+    ZoomCamera.ZOOM_CLOSE = 1.2;
+    ZoomCamera.ZOOM_FAR = 0.8;
+    ZoomCamera.ZOOM_MAX = 2;
+    ZoomCamera.ZOOM_MIN = 0.5;
+    ZoomCamera.ZOOM_STEP = 0.1;
+    tdyctw.ZoomCamera = ZoomCamera;
 })(tdyctw || (tdyctw = {}));
 //# sourceMappingURL=game.js.map

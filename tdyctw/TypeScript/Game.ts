@@ -13,7 +13,6 @@ module tdyctw {
             this.state.add("PlayState", PlayState, false);
 
             this.state.start("BootState");
-
         }
 
 

@@ -1,4 +1,6 @@
 ﻿/// <reference path="../def/phaser.d.ts"/>
+/// <reference path="../def/voronoi.d.ts"/>
+/// <reference path="../def/delaunay.d.ts"/>
 
 module tdyctw {
 
@@ -15,6 +17,11 @@ module tdyctw {
         trailWidth: number = 1;
         zoomCamera: ZoomCamera;
         selectSound: Phaser.Sound;
+        voronoiDiagram: any;
+        delaunayDiagram: any[];
+        delaunayPoints: any[];
+        voronoiDebug: Phaser.Graphics;
+        voronoiPoints: Phaser.Point[];
 
         create() {
             this.selectSound = this.add.audio("baseSelectSFX", 1.0);
@@ -40,17 +47,55 @@ module tdyctw {
 
             this.trailLine = this.add.graphics(0, 0);
             this.trailOffset = 0;
+
+            this.generateMap();
+            this.voronoiDebug = new Phaser.Graphics(this.game, 0, 0);
+            this.zoomCamera.add(this.voronoiDebug);
         }
 
         update() {
+            // Voronoi
+            this.voronoiDebug.clear();
+            this.voronoiDebug.lineStyle(1, 0x0000ff, 1);
+            for (var i = 0; i < this.voronoiDiagram.edges.length; i++) {
+                var e = this.voronoiDiagram.edges[i];
+                this.voronoiDebug.moveTo(e.va.x, e.va.y);
+                this.voronoiDebug.lineTo(e.vb.x, e.vb.y);
+            }
+            this.voronoiDebug.lineStyle(1, 0xff0000, 1);
+            for (var i = 0; i < this.voronoiDiagram.vertices.length; i++) {
+                var v = this.voronoiDiagram.vertices[i];
+                this.voronoiDebug.moveTo(v.x, v.y);
+                this.voronoiDebug.lineTo(v.x + 1, v.y + 1);
+            }
+            this.voronoiDebug.lineStyle(1, 0xffff00, 1);
+            for (var i = 0; i < this.voronoiPoints.length; i++) {
+                var p = this.voronoiPoints[i];
+                this.voronoiDebug.moveTo(p.x, p.y);
+                this.voronoiDebug.lineTo(p.x + 1, p.y + 1);
+            }
+            this.voronoiDebug.lineStyle(1, 0xff00ff, 1);
+            for (var i = this.delaunayDiagram.length; i;) {
+                --i; 
+                var p1 = new Phaser.Point(this.delaunayPoints[this.delaunayDiagram[i]][0], this.delaunayPoints[this.delaunayDiagram[i]][1]);
+                --i;
+                var p2 = new Phaser.Point(this.delaunayPoints[this.delaunayDiagram[i]][0], this.delaunayPoints[this.delaunayDiagram[i]][1]);
+                --i;
+                var p3 = new Phaser.Point(this.delaunayPoints[this.delaunayDiagram[i]][0], this.delaunayPoints[this.delaunayDiagram[i]][1]);
+                this.voronoiDebug.moveTo(p1.x, p1.y);
+                this.voronoiDebug.lineTo(p2.x, p2.y);
+                this.voronoiDebug.lineTo(p3.x, p3.y);
+                //this.voronoiDebug.lineTo(p1.x, p1.y);
+            }
+
             this.trailLine.clear();
-            this.debugText.text = "FPS: " + this.time.fps + "|" + this.input.position + "|" + this.zoomCamera.inputPosition();
+            this.trailLine.lineStyle(this.trailWidth, 0x008800, 1.0);
+            // this.debugText.text = "FPS: " + this.time.fps + "|" + this.input.position + "|" + this.zoomCamera.inputPosition();
             if (this.selectedBase != null) {
-                this.trailLine.lineStyle(this.trailWidth, 0x008800, 1.0);
 
                 var zoom = this.zoomCamera.currentZoom;
                 var basePosition = this.selectedBase.position.clone().multiply(zoom, zoom);
-                
+
                 var draw = true;
                 var point = basePosition.clone();
                 var norm = Phaser.Point.subtract(this.game.input.position, basePosition).normalize().setMagnitude(this.trailLength);
@@ -68,8 +113,8 @@ module tdyctw {
                 if (this.trailOffset >= this.trailLength * 2) {
                     this.trailOffset = 0;
                 }
-                
             }
+
         }
 
         addBase(x: number, y: number) {
@@ -83,6 +128,29 @@ module tdyctw {
             }, this);
             this.bases.push(base);
             this.zoomCamera.add(base);
+        }
+
+        generateMap() {
+            var voronoi = new Voronoi();
+            var bbox = { xl: 0, xr: this.world.width, yt: 0, yb: this.world.height };
+            this.voronoiPoints = [];
+            var sites = [];
+            this.delaunayPoints = [];
+            while (sites.length < 100) {
+                var p = new Phaser.Point(this.rnd.integerInRange(0, this.world.width), this.rnd.integerInRange(0, this.world.height));
+                this.voronoiPoints.push(p);
+                sites.push({ x: p.x, y: p.y });
+                this.delaunayPoints.push([p.x, p.y]);
+            }
+
+            // a 'vertex' is an object exhibiting 'x' and 'y' properties. The
+            // Voronoi object will add a unique 'voronoiId' property to all
+            // sites. The 'voronoiId' can be used as a key to lookup the associated cell
+            // in diagram.cells.
+
+            this.voronoiDiagram = voronoi.compute(sites, bbox);
+
+            this.delaunayDiagram = Delaunay.triangulate(this.delaunayPoints);
         }
     }
 

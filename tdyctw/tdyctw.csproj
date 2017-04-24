@@ -138,6 +138,7 @@
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\bootstrap-3.3.7.js" />
     <Content Include="Scripts\bootstrap-3.3.7.min.js" />
+    <Content Include="Scripts\delaunay-1.0.1.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.slim.js" />
@@ -147,6 +148,8 @@
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\phaser-2.7.6.js" />
     <Content Include="Scripts\phaser-2.7.6.min.js" />
+    <Content Include="Scripts\phaser-debug-1.1.9.js" />
+    <Content Include="Scripts\rhill-voronoi-core-1.0.0.min.js" />
     <Content Include="Web.config" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
@@ -187,6 +190,8 @@
     <TypeScriptCompile Include="TypeScript\def\p2.d.ts" />
     <TypeScriptCompile Include="TypeScript\def\phaser.d.ts" />
     <TypeScriptCompile Include="TypeScript\def\pixi.d.ts" />
+    <TypeScriptCompile Include="TypeScript\def\delaunay.d.ts" />
+    <TypeScriptCompile Include="TypeScript\def\voronoi.d.ts" />
     <TypeScriptCompile Include="TypeScript\Game.ts" />
     <TypeScriptCompile Include="TypeScript\Sprite\BaseSprite.ts" />
     <TypeScriptCompile Include="TypeScript\State\PlayState.ts" />

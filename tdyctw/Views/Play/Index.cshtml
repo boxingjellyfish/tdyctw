@@ -10,12 +10,16 @@
     <button id="goToBootState">Boot</button>
     <button id="goToMainMenuState">Menu</button>
     <button id="goToPlayState">Play</button>
+    <button id="addDebugPlugin">Debug</button>
     <p>Current players:</p>
     <div id="playerList"></div>
 </div>
 
 <script src="~/Scripts/jquery.signalR-2.2.1.min.js"></script>
 <script src="~/Scripts/phaser-2.7.6.min.js"></script>
+<script src="~/Scripts/phaser-debug-1.1.9.js"></script>
+<script src="~/Scripts/rhill-voronoi-core-1.0.0.min.js"></script>
+<script src="~/Scripts/delaunay-1.0.1.js"></script>
 <script src="~/Scripts/game.js?@(MiscExtensions.DebugResourceSuffix())"></script>
 <script src="~/signalr/hubs"></script>
 <script type="text/javascript">
@@ -51,12 +55,15 @@
         $("#goToPlayState").click(function () {
             game.state.start("PlayState");
         });
+        $("#addDebugPlugin").click(function () {
+            game.add.plugin(Phaser.Plugin.Debug);
+        });
         
         w = $("#gameContainer").width();
         h = w / ratio;
 
-        game = new tdyctw.Game(w, h);
-        
+        game = new tdyctw.Game(w, h);        
+
         $(window).resize(function () {
             if (w != $("#gameContainer").width()) {
                 w = $("#gameContainer").width();

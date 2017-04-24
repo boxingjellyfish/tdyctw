@@ -19,18 +19,34 @@ module tdyctw {
             //  Phaser will automatically pause if the browser tab the game is in loses focus. You can disable that here:
             this.stage.disableVisibilityChange = true;
 
-            this.game.time.advancedTiming = true;
+            this.time.advancedTiming = true;
+
+            // Stretch to fill
+            //this.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
+
+            // Keep original size
+            //this.scale.fullScreenScaleMode = Phaser.ScaleManager.NO_SCALE;
+
+            // Maintain aspect ratio
+            //this.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+
+            // Resize
+            this.scale.fullScreenScaleMode = Phaser.ScaleManager.RESIZE;
 
             // Studio logo
             this.logo = this.add.sprite(this.world.centerX, this.world.centerY, "bjlogo");
             this.logo.anchor.setTo(0.5, 0.5);
             this.logo.alpha = 0;
-            
+
             this.introSound = this.game.add.audio("introSound", 0.5);
             this.introSound.play();
-            
+
             var fadeIn = this.add.tween(this.logo).to({ alpha: 1 }, 1200, Phaser.Easing.Linear.None, true);
             fadeIn.onComplete.add(this.fadeInComplete, this);
+        }
+
+        update() {
+            this.logo.position = new Phaser.Point(this.world.centerX, this.world.centerY);
         }
 
         fadeInComplete() {

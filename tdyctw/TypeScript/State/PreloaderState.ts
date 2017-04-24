@@ -35,6 +35,10 @@ module tdyctw {
         create() {
         }
 
+        update() {
+            this.loadingText.position = new Phaser.Point(this.world.centerX, this.world.centerY);
+        }
+
         fileComplete(progress: any, cacheKey: any, success: any, totalLoaded: any, totalFiles: any) {
             this.loadingText.text = PreloaderState.LOADING_MESSAGE.replace("{0}", progress);
         }

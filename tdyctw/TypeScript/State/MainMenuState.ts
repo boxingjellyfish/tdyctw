@@ -26,7 +26,7 @@ module tdyctw {
             this.titleText.alpha = 0;
             
             var optionStartString = this.cache.getJSON("strings")["main_menu_start"];
-            this.optionStartText = this.add.text(this.world.centerX, this.world.centerY * 1.25, optionStartString, this.optionStyle);
+            this.optionStartText = this.add.text(this.world.centerX, this.world.centerY + 100, optionStartString, this.optionStyle);
             this.optionStartText.anchor.set(0.5);
             this.optionStartText.alpha = 0;
             this.optionStartText.inputEnabled = true;
@@ -34,14 +34,14 @@ module tdyctw {
             this.optionStartText.events.onInputOver.add(this.playRolloverSound, this);
             
             var option2String = this.cache.getJSON("strings")["main_menu_lorem"];
-            this.option2Text = this.add.text(this.world.centerX, this.optionStartText.y + 25, option2String, this.optionStyle);
+            this.option2Text = this.add.text(this.world.centerX, this.world.centerY + 125, option2String, this.optionStyle);
             this.option2Text.anchor.set(0.5);
             this.option2Text.alpha = 0;
             this.option2Text.inputEnabled = true;
             this.option2Text.events.onInputOver.add(this.playRolloverSound, this);
             
             var option3String = this.cache.getJSON("strings")["main_menu_ipsum"];
-            this.option3Text = this.add.text(this.world.centerX, this.optionStartText.y + 50, option3String, this.optionStyle);
+            this.option3Text = this.add.text(this.world.centerX, this.world.centerY + 150, option3String, this.optionStyle);
             this.option3Text.anchor.set(0.5);
             this.option3Text.alpha = 0;
             this.option3Text.inputEnabled = true;
@@ -69,6 +69,11 @@ module tdyctw {
         }
 
         update() {
+            this.titleText.position = new Phaser.Point(this.world.centerX, this.world.centerY);
+            this.optionStartText.position = new Phaser.Point(this.world.centerX, this.world.centerY + 100);
+            this.option2Text.position = new Phaser.Point(this.world.centerX, this.world.centerY + 125);
+            this.option3Text.position = new Phaser.Point(this.world.centerX, this.world.centerY + 150);
+
             if (this.inputEnabled) {
                 this.optionStartText.alpha = this.optionStartText.input.pointerOver() ? 1 : 0.75;
                 this.option2Text.alpha = this.option2Text.input.pointerOver() ? 1 : 0.75;

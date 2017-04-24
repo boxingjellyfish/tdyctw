@@ -8,6 +8,10 @@ module tdyctw {
         public static ZOOM_CLOSE: number = 1.2;
         public static ZOOM_FAR: number = 0.8;
 
+        static ZOOM_MAX: number = 2;
+        static ZOOM_MIN: number = 0.5;
+        static ZOOM_STEP: number = 0.1;
+
         public currentZoom: number;
 
         zoomInButton: Phaser.Text;
@@ -40,7 +44,9 @@ module tdyctw {
             this.zoomOutButton.events.onInputDown.add(function () {
                 this.zoomOut();
             }, this);
-        }
+            
+            //this.game.scale.setResizeCallback(this.onResize, this);
+        }        
 
         public zoomTo(scale: number) {
             this.currentZoom = scale;
@@ -53,14 +59,14 @@ module tdyctw {
         }
 
         public zoomIn() {
-            if (this.currentZoom <= 2) {
-                this.zoomTo(this.currentZoom + 0.1);
+            if (this.currentZoom <= ZoomCamera.ZOOM_MAX) {
+                this.zoomTo(this.currentZoom + ZoomCamera.ZOOM_STEP);
             }
         }
 
         public zoomOut() {
-            if (this.currentZoom >= 0.5) {
-                this.zoomTo(this.currentZoom - 0.1);
+            if (this.currentZoom >= ZoomCamera.ZOOM_MIN) {
+                this.zoomTo(this.currentZoom - ZoomCamera.ZOOM_STEP);
             }
         }
 
@@ -68,6 +74,9 @@ module tdyctw {
             this.zoomInButton.alpha = this.zoomInButton.input.pointerOver() ? 1 : 0.75;
             this.zoomResetButton.alpha = this.zoomResetButton.input.pointerOver() ? 1 : 0.75;
             this.zoomOutButton.alpha = this.zoomOutButton.input.pointerOver() ? 1 : 0.75;
+            this.zoomInButton.position = new Phaser.Point(this.game.world.width - 60, 10);
+            this.zoomResetButton.position = new Phaser.Point(this.game.world.width - 40, 10);
+            this.zoomOutButton.position = new Phaser.Point(this.game.world.width - 20, 10);
         }
         
     }

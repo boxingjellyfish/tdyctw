@@ -12,8 +12,8 @@ var tdyctw;
 (function (tdyctw) {
     var Game = (function (_super) {
         __extends(Game, _super);
-        function Game() {
-            var _this = _super.call(this, 800, 450, Phaser.AUTO, "gamecontainer", null) || this;
+        function Game(width, height) {
+            var _this = _super.call(this, width, height, Phaser.AUTO, "gameContainer", null) || this;
             _this.state.add("BootState", tdyctw.BootState, false);
             _this.state.add("PreloaderState", tdyctw.PreloaderState, false);
             _this.state.add("MainMenuState", tdyctw.MainMenuState, false);
@@ -78,25 +78,31 @@ var tdyctw;
             return this.game.input.position.clone().multiply(inverse, inverse);
         };
         ZoomCamera.prototype.zoomIn = function () {
-            if (this.currentZoom <= 2) {
-                this.zoomTo(this.currentZoom + 0.1);
+            if (this.currentZoom <= ZoomCamera.ZOOM_MAX) {
+                this.zoomTo(this.currentZoom + ZoomCamera.ZOOM_STEP);
             }
         };
         ZoomCamera.prototype.zoomOut = function () {
-            if (this.currentZoom >= 0.5) {
-                this.zoomTo(this.currentZoom - 0.1);
+            if (this.currentZoom >= ZoomCamera.ZOOM_MIN) {
+                this.zoomTo(this.currentZoom - ZoomCamera.ZOOM_STEP);
             }
         };
         ZoomCamera.prototype.update = function () {
             this.zoomInButton.alpha = this.zoomInButton.input.pointerOver() ? 1 : 0.75;
             this.zoomResetButton.alpha = this.zoomResetButton.input.pointerOver() ? 1 : 0.75;
             this.zoomOutButton.alpha = this.zoomOutButton.input.pointerOver() ? 1 : 0.75;
+            this.zoomInButton.position = new Phaser.Point(this.game.world.width - 60, 10);
+            this.zoomResetButton.position = new Phaser.Point(this.game.world.width - 40, 10);
+            this.zoomOutButton.position = new Phaser.Point(this.game.world.width - 20, 10);
         };
         return ZoomCamera;
     }(Phaser.Group));
     ZoomCamera.ZOOM_RESET = 1;
     ZoomCamera.ZOOM_CLOSE = 1.2;
     ZoomCamera.ZOOM_FAR = 0.8;
+    ZoomCamera.ZOOM_MAX = 2;
+    ZoomCamera.ZOOM_MIN = 0.5;
+    ZoomCamera.ZOOM_STEP = 0.1;
     tdyctw.ZoomCamera = ZoomCamera;
 })(tdyctw || (tdyctw = {}));
 var tdyctw;
@@ -113,7 +119,8 @@ var tdyctw;
         BootState.prototype.create = function () {
             this.input.maxPointers = 1;
             this.stage.disableVisibilityChange = true;
-            this.game.time.advancedTiming = true;
+            this.time.advancedTiming = true;
+            this.scale.fullScreenScaleMode = Phaser.ScaleManager.RESIZE;
             this.logo = this.add.sprite(this.world.centerX, this.world.centerY, "bjlogo");
             this.logo.anchor.setTo(0.5, 0.5);
             this.logo.alpha = 0;
@@ -121,6 +128,9 @@ var tdyctw;
             this.introSound.play();
             var fadeIn = this.add.tween(this.logo).to({ alpha: 1 }, 1200, Phaser.Easing.Linear.None, true);
             fadeIn.onComplete.add(this.fadeInComplete, this);
+        };
+        BootState.prototype.update = function () {
+            this.logo.position = new Phaser.Point(this.world.centerX, this.world.centerY);
         };
         BootState.prototype.fadeInComplete = function () {
             var fadeOut = this.add.tween(this.logo).to({ alpha: 0 }, 1200, Phaser.Easing.Linear.None, true, 1000);
@@ -150,20 +160,20 @@ var tdyctw;
             this.titleText.anchor.set(0.5);
             this.titleText.alpha = 0;
             var optionStartString = this.cache.getJSON("strings")["main_menu_start"];
-            this.optionStartText = this.add.text(this.world.centerX, this.world.centerY * 1.25, optionStartString, this.optionStyle);
+            this.optionStartText = this.add.text(this.world.centerX, this.world.centerY + 100, optionStartString, this.optionStyle);
             this.optionStartText.anchor.set(0.5);
             this.optionStartText.alpha = 0;
             this.optionStartText.inputEnabled = true;
             this.optionStartText.events.onInputDown.add(this.startGame, this);
             this.optionStartText.events.onInputOver.add(this.playRolloverSound, this);
             var option2String = this.cache.getJSON("strings")["main_menu_lorem"];
-            this.option2Text = this.add.text(this.world.centerX, this.optionStartText.y + 25, option2String, this.optionStyle);
+            this.option2Text = this.add.text(this.world.centerX, this.world.centerY + 125, option2String, this.optionStyle);
             this.option2Text.anchor.set(0.5);
             this.option2Text.alpha = 0;
             this.option2Text.inputEnabled = true;
             this.option2Text.events.onInputOver.add(this.playRolloverSound, this);
             var option3String = this.cache.getJSON("strings")["main_menu_ipsum"];
-            this.option3Text = this.add.text(this.world.centerX, this.optionStartText.y + 50, option3String, this.optionStyle);
+            this.option3Text = this.add.text(this.world.centerX, this.world.centerY + 150, option3String, this.optionStyle);
             this.option3Text.anchor.set(0.5);
             this.option3Text.alpha = 0;
             this.option3Text.inputEnabled = true;
@@ -186,6 +196,10 @@ var tdyctw;
             this.menuMusic.loopFull();
         };
         MainMenuState.prototype.update = function () {
+            this.titleText.position = new Phaser.Point(this.world.centerX, this.world.centerY);
+            this.optionStartText.position = new Phaser.Point(this.world.centerX, this.world.centerY + 100);
+            this.option2Text.position = new Phaser.Point(this.world.centerX, this.world.centerY + 125);
+            this.option3Text.position = new Phaser.Point(this.world.centerX, this.world.centerY + 150);
             if (this.inputEnabled) {
                 this.optionStartText.alpha = this.optionStartText.input.pointerOver() ? 1 : 0.75;
                 this.option2Text.alpha = this.option2Text.input.pointerOver() ? 1 : 0.75;
@@ -239,16 +253,7 @@ var tdyctw;
             this.add.existing(this.zoomCamera);
             this.bases = [];
             for (var i = 0; i < 4; i++) {
-                var base = new tdyctw.BaseSprite(this.game, this.rnd.integerInRange(50, this.world.width - 50), this.rnd.integerInRange(50, this.world.height - 50));
-                base.baseIndex = i;
-                base.events.onInputDown.add(function (sprite, pointer) {
-                    this.selectSound.play();
-                    sprite.animations.play("pulse", 6, true);
-                    this.selectedBase = sprite;
-                    this.selectedBaseIndex = sprite.baseIndex;
-                }, this);
-                this.bases.push(base);
-                this.zoomCamera.add(base);
+                this.addBase(this.rnd.integerInRange(50, this.world.width - 50), this.rnd.integerInRange(50, this.world.height - 50));
             }
             this.input.onDown.add(function (sprite, pointer) {
                 for (var i = 0; i < this.bases.length; i++) {
@@ -286,6 +291,18 @@ var tdyctw;
                 }
             }
         };
+        PlayState.prototype.addBase = function (x, y) {
+            var base = new tdyctw.BaseSprite(this.game, this.rnd.integerInRange(50, this.world.width - 50), this.rnd.integerInRange(50, this.world.height - 50));
+            base.baseIndex = this.bases.length;
+            base.events.onInputDown.add(function (sprite, pointer) {
+                this.selectSound.play();
+                sprite.animations.play("pulse", 6, true);
+                this.selectedBase = sprite;
+                this.selectedBaseIndex = sprite.baseIndex;
+            }, this);
+            this.bases.push(base);
+            this.zoomCamera.add(base);
+        };
         return PlayState;
     }(Phaser.State));
     tdyctw.PlayState = PlayState;
@@ -314,6 +331,9 @@ var tdyctw;
             this.load.audio("baseSelectSFX", "/Content/audio/button-33a.wav");
         };
         PreloaderState.prototype.create = function () {
+        };
+        PreloaderState.prototype.update = function () {
+            this.loadingText.position = new Phaser.Point(this.world.centerX, this.world.centerY);
         };
         PreloaderState.prototype.fileComplete = function (progress, cacheKey, success, totalLoaded, totalFiles) {
             this.loadingText.text = PreloaderState.LOADING_MESSAGE.replace("{0}", progress);

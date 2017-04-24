@@ -27,16 +27,7 @@ module tdyctw {
 
             this.bases = [];
             for (var i = 0; i < 4; i++) {
-                var base = new BaseSprite(this.game, this.rnd.integerInRange(50, this.world.width - 50), this.rnd.integerInRange(50, this.world.height - 50));
-                base.baseIndex = i;
-                base.events.onInputDown.add(function (sprite: BaseSprite, pointer: any) {
-                    this.selectSound.play();
-                    sprite.animations.play("pulse", 6, true);
-                    this.selectedBase = sprite;
-                    this.selectedBaseIndex = sprite.baseIndex;
-                }, this);
-                this.bases.push(base);
-                this.zoomCamera.add(base);
+                this.addBase(this.rnd.integerInRange(50, this.world.width - 50), this.rnd.integerInRange(50, this.world.height - 50));
             }
 
             this.input.onDown.add(function (sprite: BaseSprite, pointer: any) {
@@ -79,6 +70,19 @@ module tdyctw {
                 }
                 
             }
+        }
+
+        addBase(x: number, y: number) {
+            var base = new BaseSprite(this.game, this.rnd.integerInRange(50, this.world.width - 50), this.rnd.integerInRange(50, this.world.height - 50));
+            base.baseIndex = this.bases.length;
+            base.events.onInputDown.add(function (sprite: BaseSprite, pointer: any) {
+                this.selectSound.play();
+                sprite.animations.play("pulse", 6, true);
+                this.selectedBase = sprite;
+                this.selectedBaseIndex = sprite.baseIndex;
+            }, this);
+            this.bases.push(base);
+            this.zoomCamera.add(base);
         }
     }
 

@@ -1,4 +1,4 @@
-﻿/// <reference path="../def/phaser.d.ts"/>
+﻿/// <reference path="../../Scripts/typings/phaser.d.ts"/>
 
 module tdyctw {
 
@@ -8,8 +8,8 @@ module tdyctw {
         public static ZOOM_CLOSE: number = 1.2;
         public static ZOOM_FAR: number = 0.8;
 
-        static ZOOM_MAX: number = 2;
-        static ZOOM_MIN: number = 0.5;
+        static ZOOM_MAX: number = 10;
+        static ZOOM_MIN: number = 0.01;
         static ZOOM_STEP: number = 0.1;
 
         public currentZoom: number;

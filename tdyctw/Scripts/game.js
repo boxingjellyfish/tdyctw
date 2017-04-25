@@ -196,42 +196,22 @@ var tdyctw;
             }, this);
             this.trailLine = this.add.graphics(0, 0);
             this.trailOffset = 0;
-            this.generateMap();
+            this.voronoiPoints = [];
+            this.delaunayPoints = [];
             this.voronoiDebug = new Phaser.Graphics(this.game, 0, 0);
             this.zoomCamera.add(this.voronoiDebug);
+            $.ajax({
+                url: "/play/generateFixedMap",
+                context: this,
+                success: function (data) {
+                    this.serverVoronoi = data;
+                }
+            });
         };
         PlayState.prototype.update = function () {
             this.voronoiDebug.clear();
-            this.voronoiDebug.lineStyle(1, 0x0000ff, 1);
-            for (var i = 0; i < this.voronoiDiagram.edges.length; i++) {
-                var e = this.voronoiDiagram.edges[i];
-                this.voronoiDebug.moveTo(e.va.x, e.va.y);
-                this.voronoiDebug.lineTo(e.vb.x, e.vb.y);
-            }
-            this.voronoiDebug.lineStyle(1, 0xff0000, 1);
-            for (var i = 0; i < this.voronoiDiagram.vertices.length; i++) {
-                var v = this.voronoiDiagram.vertices[i];
-                this.voronoiDebug.moveTo(v.x, v.y);
-                this.voronoiDebug.lineTo(v.x + 1, v.y + 1);
-            }
-            this.voronoiDebug.lineStyle(1, 0xffff00, 1);
-            for (var i = 0; i < this.voronoiPoints.length; i++) {
-                var p = this.voronoiPoints[i];
-                this.voronoiDebug.moveTo(p.x, p.y);
-                this.voronoiDebug.lineTo(p.x + 1, p.y + 1);
-            }
-            this.voronoiDebug.lineStyle(1, 0xff00ff, 1);
-            for (var i = this.delaunayDiagram.length; i;) {
-                --i;
-                var p1 = new Phaser.Point(this.delaunayPoints[this.delaunayDiagram[i]][0], this.delaunayPoints[this.delaunayDiagram[i]][1]);
-                --i;
-                var p2 = new Phaser.Point(this.delaunayPoints[this.delaunayDiagram[i]][0], this.delaunayPoints[this.delaunayDiagram[i]][1]);
-                --i;
-                var p3 = new Phaser.Point(this.delaunayPoints[this.delaunayDiagram[i]][0], this.delaunayPoints[this.delaunayDiagram[i]][1]);
-                this.voronoiDebug.moveTo(p1.x, p1.y);
-                this.voronoiDebug.lineTo(p2.x, p2.y);
-                this.voronoiDebug.lineTo(p3.x, p3.y);
-            }
+            this.updateClientVoronoi();
+            this.updateServerVoronoi();
             this.trailLine.clear();
             this.trailLine.lineStyle(this.trailWidth, 0x008800, 1.0);
             if (this.selectedBase != null) {
@@ -256,6 +236,56 @@ var tdyctw;
                 }
             }
         };
+        PlayState.prototype.updateServerVoronoi = function () {
+            if (this.serverVoronoi) {
+                this.voronoiDebug.lineStyle(1, 0x0000ff, 1);
+                for (var i = 0; i < this.serverVoronoi.length; i++) {
+                    var p = this.serverVoronoi[i];
+                    this.voronoiDebug.moveTo(p.p0.x, p.p0.y);
+                    this.voronoiDebug.lineTo(p.p1.x, p.p1.y);
+                }
+            }
+        };
+        PlayState.prototype.updateClientVoronoi = function () {
+            if (this.voronoiDiagram) {
+                this.voronoiDebug.lineStyle(1, 0xffffff, 1);
+                for (var i = 0; i < this.voronoiPoints.length; i++) {
+                    var p = this.voronoiPoints[i];
+                    this.voronoiDebug.moveTo(p.x, p.y);
+                    this.voronoiDebug.lineTo(p.x + 1, p.y + 1);
+                }
+                this.voronoiDebug.lineStyle(1, 0x0000ff, 1);
+                for (var i = 0; i < this.voronoiDiagram.edges.length; i++) {
+                    var e = this.voronoiDiagram.edges[i];
+                    if (e.va.x > 0 && e.va.y > 0 && e.vb.x > 0 && e.vb.y > 0 &&
+                        e.va.x < this.world.width && e.va.y < this.world.height && e.vb.x < this.world.width && e.vb.y < this.world.height) {
+                        this.voronoiDebug.moveTo(e.va.x, e.va.y);
+                        this.voronoiDebug.lineTo(e.vb.x, e.vb.y);
+                    }
+                }
+                this.voronoiDebug.lineStyle(1, 0xff0000, 1);
+                for (var i = 0; i < this.voronoiDiagram.vertices.length; i++) {
+                    var v = this.voronoiDiagram.vertices[i];
+                    if (v.x > 0 && v.y > 0 && v.x < this.world.width && v.y < this.world.height) {
+                        this.voronoiDebug.moveTo(v.x, v.y);
+                        this.voronoiDebug.lineTo(v.x + 1, v.y + 1);
+                    }
+                }
+                this.voronoiDebug.lineStyle(1, 0xff00ff, 1);
+                for (var i = this.delaunayDiagram.length; i;) {
+                    --i;
+                    var p1 = new Phaser.Point(this.delaunayPoints[this.delaunayDiagram[i]][0], this.delaunayPoints[this.delaunayDiagram[i]][1]);
+                    --i;
+                    var p2 = new Phaser.Point(this.delaunayPoints[this.delaunayDiagram[i]][0], this.delaunayPoints[this.delaunayDiagram[i]][1]);
+                    --i;
+                    var p3 = new Phaser.Point(this.delaunayPoints[this.delaunayDiagram[i]][0], this.delaunayPoints[this.delaunayDiagram[i]][1]);
+                    this.voronoiDebug.moveTo(p1.x, p1.y);
+                    this.voronoiDebug.lineTo(p2.x, p2.y);
+                    this.voronoiDebug.lineTo(p3.x, p3.y);
+                    this.voronoiDebug.lineTo(p1.x, p1.y);
+                }
+            }
+        };
         PlayState.prototype.addBase = function (x, y) {
             var base = new tdyctw.BaseSprite(this.game, this.rnd.integerInRange(50, this.world.width - 50), this.rnd.integerInRange(50, this.world.height - 50));
             base.baseIndex = this.bases.length;
@@ -270,18 +300,90 @@ var tdyctw;
         };
         PlayState.prototype.generateMap = function () {
             var voronoi = new Voronoi();
-            var bbox = { xl: 0, xr: this.world.width, yt: 0, yb: this.world.height };
+            var bbox = { xl: 10, xr: this.world.width - 10, yt: 10, yb: this.world.height - 10 };
             this.voronoiPoints = [];
-            var sites = [];
             this.delaunayPoints = [];
-            while (sites.length < 100) {
-                var p = new Phaser.Point(this.rnd.integerInRange(0, this.world.width), this.rnd.integerInRange(0, this.world.height));
-                this.voronoiPoints.push(p);
-                sites.push({ x: p.x, y: p.y });
-                this.delaunayPoints.push([p.x, p.y]);
-            }
-            this.voronoiDiagram = voronoi.compute(sites, bbox);
+            this.voronoiPoints.push({ x: 100, y: 100 });
+            this.delaunayPoints.push([100, 100]);
+            this.voronoiPoints.push({ x: 200, y: 300 });
+            this.delaunayPoints.push([200, 300]);
+            this.voronoiPoints.push({ x: 40, y: 60 });
+            this.delaunayPoints.push([40, 60]);
+            this.voronoiPoints.push({ x: 50, y: 150 });
+            this.delaunayPoints.push([50, 150]);
+            this.voronoiPoints.push({ x: 256, y: 123 });
+            this.delaunayPoints.push([256, 123]);
+            this.voronoiPoints.push({ x: 545, y: 411 });
+            this.delaunayPoints.push([545, 411]);
+            this.voronoiDiagram = voronoi.compute(this.voronoiPoints, bbox);
             this.delaunayDiagram = Delaunay.triangulate(this.delaunayPoints);
+            for (var i = 0; i < 1; i++) {
+                this.relax();
+            }
+        };
+        PlayState.prototype.relax = function () {
+            var cells = this.voronoiDiagram.cells, iCell = cells.length, cell, site, sites = [], again = false, rn, dist;
+            var p = 1 / iCell * 0.1;
+            while (iCell--) {
+                cell = cells[iCell];
+                rn = Math.random();
+                if (rn < p) {
+                    continue;
+                }
+                site = this.cellCentroid(cell);
+                dist = this.distance(site, cell.site);
+                again = again || dist > 1;
+                if (dist > 2) {
+                    site.x = (site.x + cell.site.x) / 2;
+                    site.y = (site.y + cell.site.y) / 2;
+                }
+                if (rn > (1 - p)) {
+                    dist /= 2;
+                    sites.push({
+                        x: site.x + (site.x - cell.site.x) / dist,
+                        y: site.y + (site.y - cell.site.y) / dist,
+                    });
+                }
+                sites.push(site);
+            }
+            var voronoi = new Voronoi();
+            var bbox = { xl: 10, xr: this.world.width - 10, yt: 10, yb: this.world.height - 10 };
+            this.voronoiPoints = sites;
+            this.voronoiDiagram = voronoi.compute(this.voronoiPoints, bbox);
+            this.delaunayPoints = [];
+            for (var i = 0; i < this.voronoiPoints.length; i++) {
+                this.delaunayPoints.push([this.voronoiPoints[i].x, this.voronoiPoints[i].y]);
+            }
+            this.delaunayDiagram = Delaunay.triangulate(this.delaunayPoints);
+        };
+        PlayState.prototype.distance = function (a, b) {
+            var dx = a.x - b.x, dy = a.y - b.y;
+            return Math.sqrt(dx * dx + dy * dy);
+        };
+        PlayState.prototype.cellCentroid = function (cell) {
+            var x = 0, y = 0, halfedges = cell.halfedges, iHalfedge = halfedges.length, halfedge, v, p1, p2;
+            while (iHalfedge--) {
+                halfedge = halfedges[iHalfedge];
+                p1 = halfedge.getStartpoint();
+                p2 = halfedge.getEndpoint();
+                v = p1.x * p2.y - p2.x * p1.y;
+                x += (p1.x + p2.x) * v;
+                y += (p1.y + p2.y) * v;
+            }
+            v = this.cellArea(cell) * 6;
+            return { x: x / v, y: y / v };
+        };
+        PlayState.prototype.cellArea = function (cell) {
+            var area = 0, halfedges = cell.halfedges, iHalfedge = halfedges.length, halfedge, p1, p2;
+            while (iHalfedge--) {
+                halfedge = halfedges[iHalfedge];
+                p1 = halfedge.getStartpoint();
+                p2 = halfedge.getEndpoint();
+                area += p1.x * p2.y;
+                area -= p1.y * p2.x;
+            }
+            area /= 2;
+            return area;
         };
         return PlayState;
     }(Phaser.State));
@@ -403,8 +505,8 @@ var tdyctw;
     ZoomCamera.ZOOM_RESET = 1;
     ZoomCamera.ZOOM_CLOSE = 1.2;
     ZoomCamera.ZOOM_FAR = 0.8;
-    ZoomCamera.ZOOM_MAX = 2;
-    ZoomCamera.ZOOM_MIN = 0.5;
+    ZoomCamera.ZOOM_MAX = 10;
+    ZoomCamera.ZOOM_MIN = 0.01;
     ZoomCamera.ZOOM_STEP = 0.1;
     tdyctw.ZoomCamera = ZoomCamera;
 })(tdyctw || (tdyctw = {}));

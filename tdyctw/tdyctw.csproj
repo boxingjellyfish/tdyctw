@@ -135,21 +135,21 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\txt\strings_en.json" />
-    <None Include="Scripts\jquery-3.1.1.intellisense.js" />
-    <Content Include="Scripts\bootstrap-3.3.7.js" />
-    <Content Include="Scripts\bootstrap-3.3.7.min.js" />
-    <Content Include="Scripts\delaunay-1.0.1.js" />
-    <Content Include="Scripts\jquery-3.1.1.js" />
-    <Content Include="Scripts\jquery-3.1.1.min.js" />
-    <Content Include="Scripts\jquery-3.1.1.slim.js" />
-    <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
-    <Content Include="Scripts\jquery.signalR-2.2.1.js" />
-    <Content Include="Scripts\jquery.signalR-2.2.1.min.js" />
-    <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\phaser-2.7.6.js" />
-    <Content Include="Scripts\phaser-2.7.6.min.js" />
-    <Content Include="Scripts\phaser-debug-1.1.9.js" />
-    <Content Include="Scripts\rhill-voronoi-core-1.0.0.min.js" />
+    <None Include="Scripts\lib\jquery-3.1.1.intellisense.js" />
+    <Content Include="Scripts\lib\bootstrap-3.3.7.js" />
+    <Content Include="Scripts\lib\bootstrap-3.3.7.min.js" />
+    <Content Include="Scripts\lib\delaunay-1.0.1.js" />
+    <Content Include="Scripts\lib\jquery-3.1.1.js" />
+    <Content Include="Scripts\lib\jquery-3.1.1.min.js" />
+    <Content Include="Scripts\lib\jquery-3.1.1.slim.js" />
+    <Content Include="Scripts\lib\jquery-3.1.1.slim.min.js" />
+    <Content Include="Scripts\lib\jquery.signalR-2.2.1.js" />
+    <Content Include="Scripts\lib\jquery.signalR-2.2.1.min.js" />
+    <Content Include="Scripts\lib\modernizr-2.8.3.js" />
+    <Content Include="Scripts\lib\phaser-2.7.6.js" />
+    <Content Include="Scripts\lib\phaser-2.7.6.min.js" />
+    <Content Include="Scripts\lib\phaser-debug-1.1.9.js" />
+    <Content Include="Scripts\lib\rhill-voronoi-core-1.0.0.min.js" />
     <Content Include="Web.config" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
@@ -172,8 +172,8 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
-    <Content Include="Scripts\jquery-3.1.1.min.map" />
+    <Content Include="Scripts\lib\jquery-3.1.1.slim.min.map" />
+    <Content Include="Scripts\lib\jquery-3.1.1.min.map" />
     <Content Include="Views\Play\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -187,11 +187,12 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="TypeScript\def\p2.d.ts" />
-    <TypeScriptCompile Include="TypeScript\def\phaser.d.ts" />
-    <TypeScriptCompile Include="TypeScript\def\pixi.d.ts" />
-    <TypeScriptCompile Include="TypeScript\def\delaunay.d.ts" />
-    <TypeScriptCompile Include="TypeScript\def\voronoi.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\jquery.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\p2.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\phaser.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\pixi.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\delaunay.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\voronoi.d.ts" />
     <TypeScriptCompile Include="TypeScript\Game.ts" />
     <TypeScriptCompile Include="TypeScript\Sprite\BaseSprite.ts" />
     <TypeScriptCompile Include="TypeScript\State\PlayState.ts" />
@@ -203,6 +204,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\csDelaunay\csDelaunay.csproj">
+      <Project>{69dab9bc-0618-4771-817f-d29231ab1985}</Project>
+      <Name>csDelaunay</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

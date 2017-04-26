@@ -24,7 +24,7 @@ module tdyctw {
         delaunayPoints: any[];
         voronoiDebug: Phaser.Graphics;
 
-        serverVoronoi: any[];
+        serverVoronoi: any;
 
         create() {
             this.selectSound = this.add.audio("baseSelectSFX", 1.0);
@@ -61,6 +61,7 @@ module tdyctw {
                 url: "/play/generateFixedMap",
                 context: this,
                 success: function (data) {
+                    console.log(data);
                     this.serverVoronoi = data;
                 }
             });
@@ -106,10 +107,18 @@ module tdyctw {
         updateServerVoronoi() {
             if (this.serverVoronoi) {
                 this.voronoiDebug.lineStyle(1, 0x0000ff, 1);
-                for (var i = 0; i < this.serverVoronoi.length; i++) {
-                    var p = this.serverVoronoi[i];
+                for (var i = 0; i < this.serverVoronoi.Diagram.length; i++) {
+                    var p = this.serverVoronoi.Diagram[i];
                     this.voronoiDebug.moveTo(p.p0.x, p.p0.y);
                     this.voronoiDebug.lineTo(p.p1.x, p.p1.y);
+                }
+                this.voronoiDebug.lineStyle(1, 0xff0000, 1);
+                for (var i = 0; i < this.serverVoronoi.HullPoints.length; i++) {
+                    var p = this.serverVoronoi.HullPoints[i];
+                    this.voronoiDebug.moveTo(p.x - 2, p.y - 2);
+                    this.voronoiDebug.lineTo(p.x + 2, p.y + 2);
+                    this.voronoiDebug.moveTo(p.x + 2, p.y - 2);
+                    this.voronoiDebug.lineTo(p.x - 2, p.y + 2);
                 }
             }
         }
